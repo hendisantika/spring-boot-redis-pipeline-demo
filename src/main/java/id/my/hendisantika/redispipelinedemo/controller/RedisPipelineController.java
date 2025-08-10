@@ -67,4 +67,11 @@ public class RedisPipelineController {
         Map<String, Object> result = redisPipelineService.getRedisInfo();
         return ResponseEntity.ok(result);
     }
+
+    @PostMapping("/performance/compare")
+    public ResponseEntity<Map<String, Object>> performanceComparison() {
+        log.info("Starting performance comparison between pipeline and normal operations");
+        Map<String, Object> result = redisPipelineService.performanceComparison();
+        return ResponseEntity.ok(result);
+    }
 }
