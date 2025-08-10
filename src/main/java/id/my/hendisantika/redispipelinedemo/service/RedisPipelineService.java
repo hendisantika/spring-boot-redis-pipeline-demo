@@ -211,7 +211,20 @@ public class RedisPipelineService {
 
         try {
             String key = "user:" + userId;
-            Map<Object, Object> userData = redisTemplate.opsForHash().entries(key);
+
+            // Use direct Redis operations to handle mixed data types properly
+            Map<String, Object> userData = new HashMap<>();
+            Object id = redisTemplate.opsForHash().get(key, "id");
+            Object name = redisTemplate.opsForHash().get(key, "name");
+            Object email = redisTemplate.opsForHash().get(key, "email");
+            Object age = redisTemplate.opsForHash().get(key, "age");
+
+            if (id != null) {
+                userData.put("id", String.valueOf(id));
+                userData.put("name", String.valueOf(name));
+                userData.put("email", String.valueOf(email));
+                userData.put("age", String.valueOf(age));
+            }
 
             result.put("key", key);
             result.put("data", userData);
