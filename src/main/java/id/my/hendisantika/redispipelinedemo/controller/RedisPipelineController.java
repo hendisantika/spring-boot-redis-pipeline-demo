@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -72,6 +73,13 @@ public class RedisPipelineController {
     public ResponseEntity<Map<String, Object>> performanceComparison() {
         log.info("Starting performance comparison between pipeline and normal operations");
         Map<String, Object> result = redisPipelineService.performanceComparison();
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Map<String, Object>> getUserData(@PathVariable int userId) {
+        log.info("Getting user data for user ID: {}", userId);
+        Map<String, Object> result = redisPipelineService.getSampleUserData(userId);
         return ResponseEntity.ok(result);
     }
 }
