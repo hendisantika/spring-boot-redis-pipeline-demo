@@ -36,4 +36,11 @@ public class RedisPipelineController {
         Map<String, Object> result = redisPipelineService.insertData10K();
         return ResponseEntity.ok(result);
     }
+
+    @PostMapping("/normal/insert")
+    public ResponseEntity<Map<String, Object>> insertData10KNormal() {
+        log.info("Starting normal insert operation for 10K records");
+        Map<String, Object> result = redisPipelineService.insertDataNormal();
+        return ResponseEntity.ok(result);
+    }
 }
