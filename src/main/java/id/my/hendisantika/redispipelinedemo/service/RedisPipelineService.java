@@ -71,10 +71,10 @@ public class RedisPipelineService {
         for (int i = 1; i <= 10000; i++) {
             String key = "normal_user:" + i;
             Map<String, Object> userData = new HashMap<>();
-            userData.put("id", i);
+            userData.put("id", String.valueOf(i));
             userData.put("name", "Normal User " + i);
             userData.put("email", "normal_user" + i + "@example.com");
-            userData.put("age", 20 + (i % 50));
+            userData.put("age", String.valueOf(20 + (i % 50)));
 
             // Store as hash
             redisTemplate.opsForHash().putAll(key, userData);
@@ -210,23 +210,42 @@ public class RedisPipelineService {
         Map<String, Object> result = new HashMap<>();
 
         try {
-            String key = "user:" + userId;
+            // Try both pipeline user and normal user keys
+            String pipelineKey = "user:" + userId;
+            String normalKey = "normal_user:" + userId;
 
-            // Use direct Redis operations to handle mixed data types properly
+            String actualKey = null;
             Map<String, Object> userData = new HashMap<>();
-            Object id = redisTemplate.opsForHash().get(key, "id");
-            Object name = redisTemplate.opsForHash().get(key, "name");
-            Object email = redisTemplate.opsForHash().get(key, "email");
-            Object age = redisTemplate.opsForHash().get(key, "age");
 
+            // Check pipeline user first
+            Object id = redisTemplate.opsForHash().get(pipelineKey, "id");
             if (id != null) {
+                actualKey = pipelineKey;
+                Object name = redisTemplate.opsForHash().get(pipelineKey, "name");
+                Object email = redisTemplate.opsForHash().get(pipelineKey, "email");
+                Object age = redisTemplate.opsForHash().get(pipelineKey, "age");
+
                 userData.put("id", String.valueOf(id));
                 userData.put("name", String.valueOf(name));
                 userData.put("email", String.valueOf(email));
                 userData.put("age", String.valueOf(age));
+            } else {
+                // Check normal user
+                id = redisTemplate.opsForHash().get(normalKey, "id");
+                if (id != null) {
+                    actualKey = normalKey;
+                    Object name = redisTemplate.opsForHash().get(normalKey, "name");
+                    Object email = redisTemplate.opsForHash().get(normalKey, "email");
+                    Object age = redisTemplate.opsForHash().get(normalKey, "age");
+
+                    userData.put("id", String.valueOf(id));
+                    userData.put("name", String.valueOf(name));
+                    userData.put("email", String.valueOf(email));
+                    userData.put("age", String.valueOf(age));
+                }
             }
 
-            result.put("key", key);
+            result.put("key", actualKey != null ? actualKey : pipelineKey);
             result.put("data", userData);
             result.put("exists", !userData.isEmpty());
             result.put("status", "SUCCESS");
