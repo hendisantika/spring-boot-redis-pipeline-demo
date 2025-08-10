@@ -60,4 +60,11 @@ public class RedisPipelineController {
         return ResponseEntity.ok(result);
     }
 
+
+    @GetMapping("/info")
+    public ResponseEntity<Map<String, Object>> getRedisInfo() {
+        log.info("Getting Redis database information");
+        Map<String, Object> result = redisPipelineService.getRedisInfo();
+        return ResponseEntity.ok(result);
+    }
 }
