@@ -103,12 +103,18 @@ allows you to send a batch of commands and then read all responses at once.
    docker-compose up -d
    ```
 
-3. **Build and run the application**
+3. **Access Redis UI (Redis Commander)**
+    - URL: http://localhost:8081
+    - Username: `admin`
+    - Password: `admin`
+    - This provides a web-based interface to browse and manage Redis data
+
+4. **Build and run the application**
    ```bash
    ./mvnw clean compile spring-boot:run
    ```
 
-4. **Verify the application is running**
+5. **Verify the application is running**
    ```bash
    curl http://localhost:8080/api/redis/health
    ```
