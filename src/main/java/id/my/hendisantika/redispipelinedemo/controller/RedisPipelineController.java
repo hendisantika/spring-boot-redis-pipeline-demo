@@ -82,4 +82,14 @@ public class RedisPipelineController {
         Map<String, Object> result = redisPipelineService.getSampleUserData(userId);
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/health")
+    public ResponseEntity<Map<String, String>> healthCheck() {
+        Map<String, String> health = Map.of(
+                "status", "UP",
+                "service", "Redis Pipeline Demo",
+                "timestamp", String.valueOf(System.currentTimeMillis())
+        );
+        return ResponseEntity.ok(health);
+    }
 }
