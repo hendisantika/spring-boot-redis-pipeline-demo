@@ -395,6 +395,129 @@ volumes:
   redis-data:
 ```
 
+## Redis CLI Commands
+
+### Direct Redis Commands for Data Operations
+
+After starting Redis with Docker Compose, you can use these Redis CLI commands to interact directly with the data:
+
+#### 1. Put (Insert) Data
+
+**Insert a single user as a Redis hash:**
+
+```bash
+# Connect to Redis CLI
+redis-cli
+
+# Set user data using hash fields
+HSET user:1 id "1" name "User 1" email "user1@example.com" age "21"
+HSET user:2 id "2" name "User 2" email "user2@example.com" age "22"
+HSET user:3 id "3" name "User 3" email "user3@example.com" age "23"
+
+# Set expiration (1 hour = 3600 seconds)
+EXPIRE user:1 3600
+EXPIRE user:2 3600
+EXPIRE user:3 3600
+```
+
+**Bulk insert multiple users (pipeline approach):**
+
+```bash
+# Create a file with multiple commands
+echo "HSET user:100 id 100 name 'User 100' email 'user100@example.com' age 25
+HSET user:101 id 101 name 'User 101' email 'user101@example.com' age 26
+HSET user:102 id 102 name 'User 102' email 'user102@example.com' age 27
+EXPIRE user:100 3600
+EXPIRE user:101 3600
+EXPIRE user:102 3600" > bulk_insert.txt
+
+# Execute bulk commands
+redis-cli < bulk_insert.txt
+```
+
+#### 2. Get All Data
+
+**Get all users (scan all keys matching pattern):**
+
+```bash
+# Get all user keys
+KEYS user:*
+
+# Get all user keys with limit (better for large datasets)
+SCAN 0 MATCH user:* COUNT 1000
+
+# Get all data for specific users
+HGETALL user:1
+HGETALL user:2
+HGETALL user:3
+```
+
+**Get all data for multiple users in one command:**
+
+```bash
+# Using pipeline to get multiple users
+echo "HGETALL user:1
+HGETALL user:2  
+HGETALL user:3
+HGETALL user:100
+HGETALL user:101" | redis-cli
+```
+
+#### 3. Get Specific Data
+
+**Get specific user by ID:**
+
+```bash
+# Get all fields for a specific user
+HGETALL user:1
+
+# Get specific field from a user
+HGET user:1 name
+HGET user:1 email
+HGET user:1 age
+
+# Get multiple fields from a user
+HMGET user:1 name email age
+```
+
+**Check if user exists:**
+
+```bash
+# Check if key exists
+EXISTS user:1
+
+# Check if specific field exists
+HEXISTS user:1 email
+```
+
+#### 4. Additional Useful Commands
+
+**Get database information:**
+
+```bash
+# Get database size
+DBSIZE
+
+# Get Redis info
+INFO
+
+# Get memory usage
+INFO memory
+```
+
+**Delete data:**
+
+```bash
+# Delete specific user
+DEL user:1
+
+# Delete multiple users
+DEL user:1 user:2 user:3
+
+# Delete all users matching pattern (use with caution!)
+redis-cli KEYS "user:*" | xargs redis-cli DEL
+```
+
 ## Testing Workflow
 
 1. **Start the application and Redis**
