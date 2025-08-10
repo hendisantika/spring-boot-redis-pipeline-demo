@@ -15,8 +15,12 @@ package id.my.hendisantika.redispipelinedemo.controller;
 import id.my.hendisantika.redispipelinedemo.service.RedisPipelineService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/redis")
@@ -26,5 +30,10 @@ public class RedisPipelineController {
 
     private final RedisPipelineService redisPipelineService;
 
-
+    @PostMapping("/pipeline/insert")
+    public ResponseEntity<Map<String, Object>> insertData10KPipeline() {
+        log.info("Starting pipeline insert operation for 10K records");
+        Map<String, Object> result = redisPipelineService.insertData10K();
+        return ResponseEntity.ok(result);
+    }
 }
