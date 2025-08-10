@@ -16,6 +16,7 @@ import id.my.hendisantika.redispipelinedemo.service.RedisPipelineService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,4 +44,12 @@ public class RedisPipelineController {
         Map<String, Object> result = redisPipelineService.insertDataNormal();
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/pipeline/read")
+    public ResponseEntity<Map<String, Object>> readData10KPipeline() {
+        log.info("Starting pipeline read operation for 10K records");
+        Map<String, Object> result = redisPipelineService.readData10K();
+        return ResponseEntity.ok(result);
+    }
+
 }
