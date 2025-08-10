@@ -16,6 +16,7 @@ import id.my.hendisantika.redispipelinedemo.service.RedisPipelineService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,6 +50,13 @@ public class RedisPipelineController {
     public ResponseEntity<Map<String, Object>> readData10KPipeline() {
         log.info("Starting pipeline read operation for 10K records");
         Map<String, Object> result = redisPipelineService.readData10K();
+        return ResponseEntity.ok(result);
+    }
+
+    @DeleteMapping("/pipeline/delete")
+    public ResponseEntity<Map<String, Object>> deleteData10KPipeline() {
+        log.info("Starting pipeline delete operation for 10K records");
+        Map<String, Object> result = redisPipelineService.deleteData10K();
         return ResponseEntity.ok(result);
     }
 
