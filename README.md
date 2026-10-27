@@ -75,20 +75,22 @@ allows you to send a batch of commands and then read all responses at once.
 
 ## Technology Stack
 
-- **Spring Boot 3.5.4**
+- **Java 25**
+- **Spring Boot 4.1.2**
 - **Spring Data Redis**
-- **Redis 7 (Alpine)**
+- **Redis 8.2 (Alpine)**
+- **Redis Commander** (web UI)
 - **Docker Compose**
 - **Lombok**
-- **Java 21**
+- **Maven 3.9 (wrapper included)**
 
 ## Quick Start
 
 ### Prerequisites
 
-- Java 21 or higher
+- Java 25 or higher
 - Docker and Docker Compose
-- Maven 3.6+
+- Maven 3.9+ (or use the bundled `./mvnw` wrapper)
 
 ### Setup Instructions
 
@@ -378,7 +380,7 @@ server.port=8080
 ```yaml
 services:
   redis:
-    image: redis:7-alpine
+    image: redis:8.2-alpine3.22
     container_name: redis-pipeline-demo
     ports:
       - "6379:6379"
@@ -390,6 +392,20 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: redis-commander-ui
+    hostname: redis-commander
+    ports:
+      - "8081:8081"
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+      - HTTP_USER=admin
+      - HTTP_PASSWORD=admin
+    depends_on:
+      - redis
+    restart: unless-stopped
 
 volumes:
   redis-data:
@@ -547,6 +563,31 @@ The application provides detailed logging for all operations:
 - Pipeline operation timings
 - Error details
 - Request/response logging
+
+## Continuous Integration & Dependency Updates
+
+### GitHub Actions
+
+The [`Java CI with Maven`](.github/workflows/maven.yml) workflow runs on every push and pull request to `main`
+(and can be triggered manually via `workflow_dispatch`):
+
+- Sets up **Temurin JDK 25** with Maven dependency caching
+- Builds and tests the project with `mvn -B package`
+- Submits the Maven dependency graph to GitHub on pushes to `main` (improves Dependabot security alerts)
+- Cancels superseded runs for the same branch/PR to save CI minutes
+
+### Dependabot
+
+[`dependabot.yml`](.github/dependabot.yml) keeps dependencies up to date automatically:
+
+| Ecosystem      | Schedule                    | Grouping                                                        | Commit prefix   |
+|----------------|-----------------------------|-----------------------------------------------------------------|-----------------|
+| Maven          | Daily, 05:00 Asia/Jakarta   | `spring-boot` (all Spring Boot artifacts), `maven-minor-patch` | `build(deps)`   |
+| GitHub Actions | Daily, 05:00 Asia/Jakarta   | `github-actions` (all actions in one PR)                        | `ci(deps)`      |
+| Docker Compose | Weekly (Mon), 05:00 Jakarta | —                                                               | `build(docker)` |
+
+Pull requests are labelled (`dependencies` plus `java`, `github-actions` or `docker`) and follow the
+Conventional Commits format.
 
 ## Contributing
 
