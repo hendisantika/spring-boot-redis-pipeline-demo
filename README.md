@@ -586,7 +586,7 @@ The [`Java CI with Maven`](.github/workflows/maven.yml) workflow runs on every p
 | GitHub Actions | Daily, 05:00 Asia/Jakarta   | `github-actions` (all actions in one PR)                        | `ci(deps)`      |
 | Docker Compose | Weekly (Mon), 05:00 Jakarta | —                                                               | `build(docker)` |
 
-Pull requests are labelled (`dependencies` plus `java`, `github-actions` or `docker`) and follow the
+Pull requests are labelled (`dependencies` plus `java`, `github_actions` or `docker`) and follow the
 Conventional Commits format.
 
 ## Contributing

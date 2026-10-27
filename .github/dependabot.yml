@@ -34,7 +34,7 @@ updates:
     open-pull-requests-limit: 10
     labels:
       - dependencies
-      - github-actions
+      - github_actions
     commit-message:
       prefix: "ci(deps)"
     groups:
