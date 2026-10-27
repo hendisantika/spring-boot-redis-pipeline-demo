@@ -11,8 +11,8 @@ updates:
       - dependencies
       - java
     commit-message:
-      prefix: "build(deps)"
-      prefix-development: "build(deps-dev)"
+      prefix: "build"
+      prefix-development: "build"
       include: scope
     groups:
       spring-boot:
